@@ -21,7 +21,7 @@ public class BulletController : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Entro");
+        
         if (other.gameObject.CompareTag("floor"))
         {
             Destroy(gameObject);
