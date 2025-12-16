@@ -4,7 +4,6 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Referencias")]
     public Camera cam;
-    public Transform player;
     public Collider muroIzquierdo;
     public Collider muroDerecho;
     //necesito el ancho del collider del jugador para hacer el clamping
@@ -14,19 +13,24 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 8f;
     public float threshold = 0.05f;
 
+    [Header("Stats")]
+    public int liveMax = 3;
+    private int lives;
+
     void Start()
     {
         //obtengo el collider del jugador para hacer el clamping (necesito su anchura)
-        playerCol = player.GetComponent<Collider>();
+        playerCol = GetComponent<Collider>();
+        lives = liveMax;
     }
 
     void Update()
     {
         Vector3 mouseScreen = Input.mousePosition;
-        mouseScreen.z = Mathf.Abs(cam.transform.position.z - player.position.z);
+        mouseScreen.z = Mathf.Abs(cam.transform.position.z - transform.position.z);
         Vector3 mouseWorld = cam.ScreenToWorldPoint(mouseScreen);
 
-        Vector3 target = player.position;
+        Vector3 target = transform.position;
         target.x = mouseWorld.x;
 
         //clamping (límites) para el jitter del jugador en las paredes
@@ -45,16 +49,31 @@ public class PlayerMovement : MonoBehaviour
         target.x = Mathf.Clamp(target.x, minX, maxX);
 
         //movimiento dle player, esto ya no es del clamping
-        float distance = Mathf.Abs(player.position.x - target.x);
+        float distance = Mathf.Abs(transform.position.x - target.x);
 
         //correcion de jittering cuando el raton esta muy cerca del player
         if (distance > threshold)
         {
-            player.position = Vector3.MoveTowards(
-                player.position,
+            transform.position = Vector3.MoveTowards(
+                transform.position,
                 target,
                 speed * Time.deltaTime
             );
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("bullet"))
+        {
+            Debug.Log("Gitanada histórica");
+            lives--;
+            Destroy(collision.gameObject);
+
+            if (lives == 0)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }
