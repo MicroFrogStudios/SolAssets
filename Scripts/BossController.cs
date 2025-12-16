@@ -21,15 +21,16 @@ public class BossController : MonoBehaviour
         if (!attacking && !resting)
         {
             attacking = true;
-            switch (Random.Range(1, 2))
+            switch (Random.Range(1, 3))
             {
                 case 1:
-                    Debug.Log("ataque 1");
+                    Debug.Log("Balas Random");
                     attackSpread = true;
                     break;
-                    /*case 2:
-                        Debug.Log("");
-                        break;*/
+
+                case 2:
+                    Debug.Log("Área Balas");
+                    break;
             }
             StartCoroutine(AttackCounter());
         }
@@ -87,13 +88,8 @@ public class BossController : MonoBehaviour
 
     void FireBullet(float x, float y)
     {
-       
-
         GameObject bullet = Instantiate(bulletBasic);
         bullet.transform.position = transform.position;
         bullet.GetComponent<BulletController>().direction = new Vector3(x, y, 0).normalized;
-
-
-
     }
 }
