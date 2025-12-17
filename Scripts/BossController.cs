@@ -59,8 +59,8 @@ public class BossController : MonoBehaviour
         //Print the time of when the function is first called.
         Debug.Log("Started AttackCoroutine at timestamp : " + Time.time);
         //attacking = true;
-        Random.Range(1, 4);
-        switch (3)
+        
+        switch (Random.Range(1, 4))
         {
             case 1:
                 Debug.Log("Balas Random");
