@@ -9,12 +9,15 @@ public class ShootOnClick : MonoBehaviour
     public float projectileLifetime = 5f;
     public float shootCooldown = 0.5f;
     private float nextFireTime = 0f;
+    public GameObject mesh;
 
     [Header("Configuración del Escudo")]
     public GameObject shieldObject;
 
     private void Start()
     {
+
+
         if (shieldObject != null)
         {
             shieldObject.GetComponent<MeshRenderer>().enabled = false;
@@ -26,6 +29,7 @@ public class ShootOnClick : MonoBehaviour
         if (Input.GetMouseButton(0) && Time.time >= nextFireTime && !shieldObject.GetComponent<MeshRenderer>().enabled && !shieldObject.GetComponent<MeshCollider>().enabled)
         {
             ShootProjectile();
+            mesh.GetComponent<Animator>().SetTrigger("lanzar");
             nextFireTime = Time.time + shootCooldown;
         }
 
