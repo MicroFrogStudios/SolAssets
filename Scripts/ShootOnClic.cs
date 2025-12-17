@@ -7,12 +7,15 @@ public class ShootOnClick : MonoBehaviour
     public float launchSpeed = 10f;
     public Transform launchPoint;
     public float projectileLifetime = 5f;
+    public float shootCooldown = 0.5f;
+    private float nextFireTime = 0f;
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0) && Time.time >= nextFireTime)
         {
             ShootProjectile();
+            nextFireTime = Time.time + shootCooldown;
         }
     }
 
