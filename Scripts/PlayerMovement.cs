@@ -3,9 +3,10 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Referencias")]
-    public Camera cam;
-    public Collider muroIzquierdo;
-    public Collider muroDerecho;
+    //public Camera cam;
+    //public Collider muroIzquierdo;
+    //public Collider muroDerecho;
+    
     //necesito el ancho del collider del jugador para hacer el clamping
     private Collider playerCol;
 
@@ -13,9 +14,14 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 8f;
     public float threshold = 0.05f;
 
+    [Header("Límites de Pantalla")]
+    public float xMinLimit = -13.5f;
+    public float xMaxLimit = 13.5f;
+
     [Header("Stats")]
     public int liveMax = 3;
     private int lives;
+
 
     void Start()
     {
@@ -26,37 +32,33 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        //ratón a mundo
         Vector3 mouseScreen = Input.mousePosition;
-        mouseScreen.z = Mathf.Abs(cam.transform.position.z - transform.position.z);
-        Vector3 mouseWorld = cam.ScreenToWorldPoint(mouseScreen);
+        mouseScreen.z = Mathf.Abs(Camera.main.transform.position.z - transform.position.z);
+        Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(mouseScreen);
 
-        Vector3 target = transform.position;
-        target.x = mouseWorld.x;
+        //target en X
+        float targetX = mouseWorld.x;
 
-        //clamping (límites) para el jitter del jugador en las paredes
+        //clamping con los valores fijos
+        //calculamos la mitad del ancho del jugador para que no "atraviese" el límite
+        float mitadJugador = playerCol != null ? playerCol.bounds.extents.x : 0f;
+        
+        float minPermitido = xMinLimit + mitadJugador;
+        float maxPermitido = xMaxLimit - mitadJugador;
 
-        //ancho del jugador
-        float mitadJugador = playerCol.bounds.extents.x;
+        targetX = Mathf.Clamp(targetX, minPermitido, maxPermitido);
 
-        //limite izq = borde der del muro izq + mitad del jugador
-        float minX = muroIzquierdo.bounds.max.x + mitadJugador;
-
-        //limite der = borde izq del muro der - mitad del jugador
-        float maxX = muroDerecho.bounds.min.x - mitadJugador;
-
-        //aplico las restricciones
-        //mathf.Clamp obliga a target.x a estar entre el valor del minX y maxX
-        target.x = Mathf.Clamp(target.x, minX, maxX);
-
-        //movimiento dle player, esto ya no es del clamping
-        float distance = Mathf.Abs(transform.position.x - target.x);
+        //movimiento
+        Vector3 targetPosition = new Vector3(targetX, transform.position.y, transform.position.z);
+        float distance = Mathf.Abs(transform.position.x - targetX);
 
         //correcion de jittering cuando el raton esta muy cerca del player
         if (distance > threshold)
         {
             transform.position = Vector3.MoveTowards(
                 transform.position,
-                target,
+                targetPosition,
                 speed * Time.deltaTime
             );
         }
