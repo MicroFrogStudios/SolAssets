@@ -18,6 +18,8 @@ public class BossController : MonoBehaviour
     public float rateOfFire = 0.5f;
 
 
+
+    public bool finishedAttack = false;
     private void Start()
     {
         StartCoroutine(RestingCoroutine());
@@ -54,8 +56,8 @@ public class BossController : MonoBehaviour
         //Print the time of when the function is first called.
         Debug.Log("Started AttackCoroutine at timestamp : " + Time.time);
         //attacking = true;
-        
-        switch (Random.Range(1, 4))
+        Random.Range(1, 4);
+        switch (3)
         {
             case 1:
                 Debug.Log("Balas Random");
@@ -67,18 +69,19 @@ public class BossController : MonoBehaviour
                 break;
             case 3:
                 Debug.Log("rayo");
-
                 bulletRay.SetActive(true);
+                bulletRay.GetComponent<RayController>().RaySweep();
                 break;
         }
 
         
-        yield return new WaitForSeconds(attackTime);
-
+        //yield return new WaitForSeconds(attackTime);
+        yield return new WaitUntil(() => finishedAttack == true);
+        finishedAttack = false;
         //After we have waited n seconds print the time again.
         Debug.Log("Finished AttackCoroutine at timestamp : " + Time.time);
         CancelInvoke();
-
+        bulletRay.SetActive(false);
         StartCoroutine(RestingCoroutine());
     }
     /// <summary>
@@ -110,4 +113,5 @@ public class BossController : MonoBehaviour
         bullet.GetComponent<BulletController>().speed = bulletSpeed;
         bullet.GetComponent<BulletController>().direction = new Vector3(x, y, 0).normalized;
     }
+
 }
