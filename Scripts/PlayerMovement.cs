@@ -66,12 +66,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("bullet"))
         {
-            Debug.Log("Gitanada histórica");
+            Debug.Log("life lost");
             lives--;
             Destroy(collision.gameObject);
 
-            if (lives == 0)
+            if (lives <= 0)
             {
+
                 Destroy(gameObject);
             }
         }

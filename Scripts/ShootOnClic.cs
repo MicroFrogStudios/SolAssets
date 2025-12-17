@@ -35,7 +35,7 @@ public class ShootOnClick : MonoBehaviour
             rb = newProjectile.AddComponent<Rigidbody>();
         }
 
-        rb.velocity = Vector3.up * launchSpeed;
+        rb.linearVelocity = Vector3.up * launchSpeed;
 
         Destroy(newProjectile, projectileLifetime);
     }
