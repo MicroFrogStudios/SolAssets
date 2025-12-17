@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -17,11 +18,13 @@ public class BossController : MonoBehaviour
     public float bulletSpeed = 0.02f;
     public float rateOfFire = 0.5f;
 
+    public int BossLiveMax = 50;
+    public int BossLive;
 
     private void Start()
     {
         StartCoroutine(RestingCoroutine());
-
+        BossLive = BossLiveMax;
         
     }
 
@@ -109,5 +112,21 @@ public class BossController : MonoBehaviour
         bullet.transform.position = transform.position;
         bullet.GetComponent<BulletController>().speed = bulletSpeed;
         bullet.GetComponent<BulletController>().direction = new Vector3(x, y, 0).normalized;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("PlayerBullet"))
+        {
+            Debug.Log("BossLive -1");
+            BossLive--;
+            Destroy(collision.gameObject);
+
+            if (BossLive <= 0)
+            {
+
+                Destroy(gameObject);
+            }
+        }
     }
 }

@@ -537,7 +537,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5000001
   m_Height: 2
@@ -636,6 +636,8 @@ MonoBehaviour:
   spreadAngleRight: 240
   bulletSpeed: 0.02
   rateOfFire: 0.5
+  BossLiveMax: 50
+  BossLive: 0
 --- !u!135 &535463240
 SphereCollider:
   m_ObjectHideFlags: 0
