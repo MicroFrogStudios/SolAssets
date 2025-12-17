@@ -17,12 +17,13 @@ public class ShootOnClick : MonoBehaviour
     {
         if (shieldObject != null)
         {
-            shieldObject.SetActive(false);
+            shieldObject.GetComponent<MeshRenderer>().enabled = false;
+            shieldObject.GetComponent<MeshCollider>().enabled = false;
         }
     }
     void Update()
     {
-        if (Input.GetMouseButton(0) && Time.time >= nextFireTime && !shieldObject.activeSelf)
+        if (Input.GetMouseButton(0) && Time.time >= nextFireTime && !shieldObject.GetComponent<MeshRenderer>().enabled && !shieldObject.GetComponent<MeshCollider>().enabled)
         {
             ShootProjectile();
             nextFireTime = Time.time + shootCooldown;
@@ -37,11 +38,13 @@ public class ShootOnClick : MonoBehaviour
         {
             if (Input.GetMouseButton(1))
             {
-                shieldObject.SetActive(true);
+                shieldObject.GetComponent<MeshRenderer>().enabled = true;
+                shieldObject.GetComponent<MeshCollider>().enabled = true;
             }
             if (Input.GetMouseButtonUp(1))
             {
-                shieldObject.SetActive(false);
+                shieldObject.GetComponent<MeshRenderer>().enabled = false;
+                shieldObject.GetComponent<MeshCollider>().enabled = false;
             }
         }
     }
