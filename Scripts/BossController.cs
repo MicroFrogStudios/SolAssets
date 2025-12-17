@@ -21,6 +21,8 @@ public class BossController : MonoBehaviour
     public int BossLiveMax = 50;
     public int BossLive;
 
+
+    public bool finishedAttack = false;
     private void Start()
     {
         StartCoroutine(RestingCoroutine());
@@ -70,18 +72,19 @@ public class BossController : MonoBehaviour
                 break;
             case 3:
                 Debug.Log("rayo");
-
                 bulletRay.SetActive(true);
+                bulletRay.GetComponent<RayController>().RaySweep();
                 break;
         }
 
         
-        yield return new WaitForSeconds(attackTime);
-
+        //yield return new WaitForSeconds(attackTime);
+        yield return new WaitUntil(() => finishedAttack == true);
+        finishedAttack = false;
         //After we have waited n seconds print the time again.
         Debug.Log("Finished AttackCoroutine at timestamp : " + Time.time);
         CancelInvoke();
-
+        bulletRay.SetActive(false);
         StartCoroutine(RestingCoroutine());
     }
     /// <summary>
@@ -114,6 +117,7 @@ public class BossController : MonoBehaviour
         bullet.GetComponent<BulletController>().direction = new Vector3(x, y, 0).normalized;
     }
 
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("PlayerBullet"))
@@ -129,4 +133,5 @@ public class BossController : MonoBehaviour
             }
         }
     }
+
 }
