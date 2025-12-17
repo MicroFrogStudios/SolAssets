@@ -499,7 +499,7 @@ GameObject:
   - component: {fileID: 509938646}
   - component: {fileID: 509938645}
   m_Layer: 0
-  m_Name: rayo1
+  m_Name: RayBody
   m_TagString: ray
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -513,12 +513,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 509938643}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -2.517, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -2.5170002, z: 0}
   m_LocalScale: {x: 0.05, y: 2.49, z: 0.05}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 535463243}
+  m_Father: {fileID: 1819765893}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &509938645
 CapsuleCollider:
@@ -629,6 +629,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletBasic: {fileID: 8220012566161168146, guid: c57d7eddee40bc9469fbfe478b7315c8, type: 3}
+  bulletRay: {fileID: 1819765892}
+  restingTime: 3
+  attackTime: 5
+  spreadAngleLeft: 120
+  spreadAngleRight: 240
+  bulletSpeed: 0.02
+  rateOfFire: 0.5
 --- !u!135 &535463240
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -716,7 +723,7 @@ Transform:
   m_LocalScale: {x: 3.67, y: 3.67, z: 3.67}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 509938644}
+  - {fileID: 1819765893}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &773190229
@@ -766,7 +773,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 773190229}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1042,6 +1049,7 @@ GameObject:
   - component: {fileID: 1375737370}
   - component: {fileID: 1375737374}
   - component: {fileID: 1375737375}
+  - component: {fileID: 1375737376}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Player
@@ -1185,6 +1193,54 @@ MonoBehaviour:
   speed: 8
   threshold: 0.05
   liveMax: 3
+--- !u!114 &1375737376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375737368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb503cdf34335a543a0ba346f0a2f427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 2693457872566721989, guid: abd4ea62dd6fe4b49b87d9196be97142, type: 3}
+  launchSpeed: 10
+  launchPoint: {fileID: 0}
+  projectileLifetime: 5
+--- !u!1 &1819765892
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1819765893}
+  m_Layer: 0
+  m_Name: RayAxis
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1819765893
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1819765892}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 509938644}
+  m_Father: {fileID: 535463243}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1964602097
 GameObject:
   m_ObjectHideFlags: 0
@@ -1232,7 +1288,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1964602097}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
