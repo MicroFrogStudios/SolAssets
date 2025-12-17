@@ -10,12 +10,39 @@ public class ShootOnClick : MonoBehaviour
     public float shootCooldown = 0.5f;
     private float nextFireTime = 0f;
 
+    [Header("Configuración del Escudo")]
+    public GameObject shieldObject;
+
+    private void Start()
+    {
+        if (shieldObject != null)
+        {
+            shieldObject.SetActive(false);
+        }
+    }
     void Update()
     {
-        if (Input.GetMouseButton(0) && Time.time >= nextFireTime)
+        if (Input.GetMouseButton(0) && Time.time >= nextFireTime && !shieldObject.activeSelf)
         {
             ShootProjectile();
             nextFireTime = Time.time + shootCooldown;
+        }
+
+        ActivateShield();
+    }
+
+    private void ActivateShield()
+    {
+        if (shieldObject != null)
+        {
+            if (Input.GetMouseButton(1))
+            {
+                shieldObject.SetActive(true);
+            }
+            if (Input.GetMouseButtonUp(1))
+            {
+                shieldObject.SetActive(false);
+            }
         }
     }
 

@@ -13,8 +13,6 @@ public class RayController : MonoBehaviour
 
 
     
-    private float raySweepRightTime= 0;
-    private float raySweepLeftTime= 0;
     private int sweepsLeft = 0;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -51,8 +49,7 @@ public class RayController : MonoBehaviour
 
     public void RaySweep()
     {
-        raySweepRightTime = sweepTime;
-        raySweepLeftTime = sweepTime;
+        transform.rotation= Quaternion.Euler(0,0,startAngle);
         sweepsLeft = sweepsPerAttack;
     }
 }
