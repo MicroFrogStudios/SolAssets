@@ -15,8 +15,6 @@ public class ProjectileSelfDestruct : MonoBehaviour
             Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
             return;
         }
-
-
         Destroy(gameObject);
     }
 }
