@@ -21,6 +21,8 @@ public class BossController : MonoBehaviour
     private void Start()
     {
         StartCoroutine(RestingCoroutine());
+
+        
     }
 
     void Update()
@@ -66,6 +68,7 @@ public class BossController : MonoBehaviour
             case 3:
                 Debug.Log("rayo");
 
+                bulletRay.SetActive(true);
                 break;
         }
 
