@@ -10,29 +10,39 @@ public class BossController : MonoBehaviour
     public GameObject bulletRay;
 
     [Header("sun parameters")]
-    public int restingTime = 3;
-    public int attackTime = 5;
+    public float restingTime = 0.5f;
+    public float attackTime = 5f;
     [Header ("bullet parameters")]
-    public float spreadAngleLeft = 120f;
-    public float spreadAngleRight = 240f;
-    public float bulletSpeed = 0.02f;
+    public float defaultSpreadAngleLeft = 120f;
+    public float defaultSpreadAngleRight = 240f;
+    public float defaultBulletSpeed = 0.02f;
     public float rateOfFire = 0.5f;
-
+    public Material SolMaterial;
     public int BossLiveMax = 50;
     public int BossLive;
 
 
+    private float spreadAngleLeft;
+    private float spreadAngleRight;
+    private float bulletSpeed;
+
     public bool finishedAttack = false;
     private void Start()
     {
-        StartCoroutine(RestingCoroutine());
-        BossLive = BossLiveMax;
         
+        BossLive = BossLiveMax;
+        spreadAngleLeft = defaultSpreadAngleLeft;
+        spreadAngleRight = defaultSpreadAngleRight;
+        bulletSpeed = defaultBulletSpeed;
+
+        StartCoroutine(RestingCoroutine());
+
     }
 
     void Update()
     {
-
+        SolMaterial.GetFloat("_noiseVariation");
+        SolMaterial.SetFloat("_noiseVariation", SolMaterial.GetFloat("_noiseVariation") + Time.deltaTime * 2);
     }
 
     /// <summary>
@@ -60,26 +70,43 @@ public class BossController : MonoBehaviour
         Debug.Log("Started AttackCoroutine at timestamp : " + Time.time);
         //attacking = true;
         
-        switch (Random.Range(1, 4))
+        switch (Random.Range(1, 6))
         {
             case 1:
                 Debug.Log("Balas Random");
                 InvokeRepeating(nameof(RandomBullet), 0f, rateOfFire);
                 break;
             case 2:
-                Debug.Log("balas random rapido");
+                Debug.Log("balas random rapido izquierda");
+                spreadAngleLeft = defaultSpreadAngleLeft + 10;
+                spreadAngleRight = defaultSpreadAngleRight - 90;
+                bulletSpeed = defaultBulletSpeed * 2f;
                 InvokeRepeating(nameof(RandomBullet), 0f, rateOfFire*0.5f);
                 break;
             case 3:
-                Debug.Log("rayo");
-                bulletRay.SetActive(true);
-                bulletRay.GetComponent<RayController>().RaySweep();
+                Debug.Log("balas random rapido en el centro");
+                spreadAngleLeft = defaultSpreadAngleLeft + 50;
+                spreadAngleRight = defaultSpreadAngleRight - 10;
+                bulletSpeed = defaultBulletSpeed * 2f;
+                InvokeRepeating(nameof(RandomBullet), 0f, rateOfFire * 0.5f);
+                break;
+            case 4:
+                Debug.Log("balas random rapido derecha");
+                spreadAngleLeft = defaultSpreadAngleLeft + 90;
+                spreadAngleRight = defaultSpreadAngleRight - 50;
+                bulletSpeed = defaultBulletSpeed * 2f;
+                InvokeRepeating(nameof(RandomBullet), 0f, rateOfFire * 0.5f);
+                break;
+            case 5:
+                Debug.Log("muchas balas lentas");
+                bulletSpeed = defaultBulletSpeed * 0.6f;
+                InvokeRepeating(nameof(RandomBullet), 0f, rateOfFire * 0.2f);
                 break;
         }
 
         
-        //yield return new WaitForSeconds(attackTime);
-        yield return new WaitUntil(() => finishedAttack == true);
+        yield return new WaitForSeconds(attackTime);
+        //yield return new WaitUntil(() => finishedAttack == true);
         finishedAttack = false;
         //After we have waited n seconds print the time again.
         Debug.Log("Finished AttackCoroutine at timestamp : " + Time.time);
@@ -95,6 +122,9 @@ public class BossController : MonoBehaviour
     {
         //Print the time of when the function is first called.
         Debug.Log("Started RestingCoroutine at timestamp : " + Time.time);
+        spreadAngleLeft = defaultSpreadAngleLeft;
+        spreadAngleRight = defaultSpreadAngleRight;
+        bulletSpeed = defaultBulletSpeed;
 
         //yield on a new YieldInstruction that waits for n seconds.
         yield return new WaitForSeconds(restingTime);

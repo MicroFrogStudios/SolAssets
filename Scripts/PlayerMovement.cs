@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movimiento")]
     public float speed = 8f;
     public float threshold = 0.05f;
+    public Vector3 slideRotation;
 
     [Header("Límites de Pantalla")]
     public float xMinLimit = -13.5f;
@@ -21,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Stats")]
     public int liveMax = 3;
     private int lives;
+
 
 
     void Start()
@@ -61,6 +63,13 @@ public class PlayerMovement : MonoBehaviour
                 targetPosition,
                 speed * Time.deltaTime
             );
+            float orientation = targetPosition.x > transform.position.x ? 1f  : -1f;
+            //girar el player hacia donde se mueve
+            transform.rotation = Quaternion.RotateTowards(transform.rotation,Quaternion.Euler(orientation*slideRotation),0.6f);
+        }
+        else
+        {
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.identity, 0.7f);
         }
     }
 
