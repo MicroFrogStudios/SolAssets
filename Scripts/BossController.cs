@@ -30,9 +30,12 @@ public class BossController : MonoBehaviour
     public bool finishedAttack = false;
 
     private GameObject player;
+    private AudioSource fireSound;
     private void Start()
     {
-        
+
+        fireSound = GetComponent<AudioSource>();
+
         BossLive = BossLiveMax;
         spreadAngleLeft = defaultSpreadAngleLeft;
         spreadAngleRight = defaultSpreadAngleRight;
@@ -255,6 +258,7 @@ public class BossController : MonoBehaviour
         bullet.transform.position = transform.position;
         bullet.GetComponent<BulletController>().speed = bulletSpeed;
         bullet.GetComponent<BulletController>().direction = new Vector3(x, y, 0).normalized;
+        fireSound.Play();
     }
 
 

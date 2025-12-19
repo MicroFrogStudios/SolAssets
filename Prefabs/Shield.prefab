@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetToFollow: {fileID: 705531220253863472, guid: a81e9a67debc5a84e9e18f80f7bf5755, type: 3}
-  offset: {x: 0, y: 0, z: 0}
+  offset: {x: 0, y: 2, z: 0}
   useOffset: 1
   smoothSpeed: 0.09
 --- !u!64 &7022552227209326205

@@ -12,7 +12,7 @@ public class FollowPlayer : MonoBehaviour
     {
         if (useOffset && targetToFollow != null)
         {
-            offset = transform.position - targetToFollow.position;
+            transform.position =  targetToFollow.position + offset;
         }
     }
 

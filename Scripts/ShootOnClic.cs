@@ -10,26 +10,32 @@ public class ShootOnClick : MonoBehaviour
     public float shootCooldown = 0.5f;
     private float nextFireTime = 0f;
     public GameObject mesh;
-
+    
     [Header("Configuración del Escudo")]
     public GameObject shieldObject;
+    public ParticleSystem shieldIndicator;
+    public float shieldCooldown = 6f;
 
-    private void Start()
+
+    private float shieldReactivationTime = 0f;
+    private GameObject shieldInstance;
+    private AudioSource shotSound;
+   
+    private void Awake()
     {
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
-        {
 
-        }
-
+        shotSound = GetComponents<AudioSource>()[1];
         if (shieldObject != null)
         {
-            shieldObject.GetComponent<MeshRenderer>().enabled = false;
-            shieldObject.GetComponent<MeshCollider>().enabled = false;
+            shieldInstance = Instantiate(shieldObject);
+            shieldInstance.GetComponent<FollowPlayer>().targetToFollow = transform;
+            shieldInstance.GetComponent<MeshRenderer>().enabled = false;
+            shieldInstance.GetComponent<MeshCollider>().enabled = false;
         }
     }
     void Update()
     {
-        if (Input.GetMouseButton(0) && Time.time >= nextFireTime && !shieldObject.GetComponent<MeshRenderer>().enabled && !shieldObject.GetComponent<MeshCollider>().enabled)
+        if (Input.GetMouseButton(0) && Time.time >= nextFireTime && !shieldInstance.GetComponent<MeshRenderer>().enabled && !shieldInstance.GetComponent<MeshCollider>().enabled)
         {
             ShootProjectile();
             mesh.GetComponent<Animator>().SetTrigger("lanzar");
@@ -41,17 +47,25 @@ public class ShootOnClick : MonoBehaviour
 
     private void ActivateShield()
     {
-        if (shieldObject != null)
+
+        if (shieldInstance != null && shieldReactivationTime < Time.time)
         {
+            
+            shieldIndicator.Play();
+
             if (Input.GetMouseButton(1))
             {
-                shieldObject.GetComponent<MeshRenderer>().enabled = true;
-                shieldObject.GetComponent<MeshCollider>().enabled = true;
+                shieldIndicator.Stop();
+                shieldInstance.GetComponent<MeshRenderer>().enabled = true;
+                shieldInstance.GetComponent<MeshCollider>().enabled = true;
             }
             if (Input.GetMouseButtonUp(1))
             {
-                shieldObject.GetComponent<MeshRenderer>().enabled = false;
-                shieldObject.GetComponent<MeshCollider>().enabled = false;
+                shieldInstance.GetComponent<MeshRenderer>().enabled = false;
+                shieldInstance.GetComponent<MeshCollider>().enabled = false;
+                shieldReactivationTime = Time.time + shieldCooldown;
+                shieldIndicator.Stop();
+
             }
         }
     }
@@ -67,7 +81,7 @@ public class ShootOnClick : MonoBehaviour
         Vector3 spawnPosition = launchPoint != null ? launchPoint.position : transform.position;
 
         GameObject newProjectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
-
+        shotSound.Play();
         Rigidbody rb = newProjectile.GetComponent<Rigidbody>();
         if (rb == null)
         {

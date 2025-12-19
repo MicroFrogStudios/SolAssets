@@ -15,7 +15,8 @@ public class UImanager : MonoBehaviour
     {
         if (indexC >= 0)
         {
-            transform.GetChild(indexC).gameObject.GetComponent<Image>().sprite = HeartEmpty;
+            
+            transform.GetChild(0).GetChild(indexC).gameObject.GetComponent<Image>().sprite = HeartEmpty;
             indexC--;
         }
        

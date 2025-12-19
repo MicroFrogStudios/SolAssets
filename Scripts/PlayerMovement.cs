@@ -23,12 +23,13 @@ public class PlayerMovement : MonoBehaviour
     [Header("Stats")]
     public int liveMax = 3;
     private int lives;
-
+    private AudioSource hurtSound;
     
     public event Action LostLife;
 
     void Start()
     {
+        hurtSound = GetComponents<AudioSource>()[0];
         //obtengo el collider del jugador para hacer el clamping (necesito su anchura)
         playerCol = GetComponent<Collider>();
         lives = liveMax;
@@ -36,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+
         //ratón a mundo
         Vector3 mouseScreen = Input.mousePosition;
         mouseScreen.z = Mathf.Abs(Camera.main.transform.position.z - transform.position.z);
@@ -82,6 +84,7 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("life lost");
             LostLife?.Invoke();
             lives--;
+            hurtSound.Play();
             Destroy(collision.gameObject);
 
             if (lives <= 0)
