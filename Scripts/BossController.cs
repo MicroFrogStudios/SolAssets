@@ -2,31 +2,34 @@ using JetBrains.Annotations;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class BossController : MonoBehaviour
 {
     [Header("prefabs")]
     public GameObject bulletBasic;
-    public GameObject bulletRay;
+    public GameObject bulletOrb;
 
     [Header("sun parameters")]
     public float restingTime = 0.5f;
     public float attackTime = 5f;
-    [Header ("bullet parameters")]
-    public float defaultSpreadAngleLeft = 120f;
-    public float defaultSpreadAngleRight = 240f;
-    public float defaultBulletSpeed = 0.02f;
-    public float rateOfFire = 0.5f;
     public Material SolMaterial;
     public int BossLiveMax = 50;
-    public int BossLive;
-
-
+    private int BossLive;
+    [Header ("bullet parameters")]
+    public const float defaultSpreadAngleLeft = 120f;
+    public const float defaultSpreadAngleRight = 240f;
+    public const float defaultBulletSpeed = 0.02f;
+    public const float defaultBulletAcceleration = 1.2f;
+    public const float rateOfFire = 0.5f;
     private float spreadAngleLeft;
     private float spreadAngleRight;
     private float bulletSpeed;
+    private float bulletAcceleration = 1.2f;
 
     public bool finishedAttack = false;
+
+    private GameObject player;
     private void Start()
     {
         
@@ -34,7 +37,7 @@ public class BossController : MonoBehaviour
         spreadAngleLeft = defaultSpreadAngleLeft;
         spreadAngleRight = defaultSpreadAngleRight;
         bulletSpeed = defaultBulletSpeed;
-
+        player = GameObject.FindGameObjectWithTag("Player");
         StartCoroutine(RestingCoroutine());
 
     }
@@ -56,8 +59,111 @@ public class BossController : MonoBehaviour
         float rx = Mathf.Sin(randomAngle * Mathf.Deg2Rad);
         float ry = Mathf.Cos(randomAngle * Mathf.Deg2Rad);
 
-        FireBullet(rx, ry);
+        FireBullet(rx, ry, bulletBasic);
 
+    }
+
+    void RandomOrb()
+    {
+        float randomAngle = Random.Range(spreadAngleLeft, spreadAngleRight);
+
+        float rx = Mathf.Sin(randomAngle * Mathf.Deg2Rad);
+        float ry = Mathf.Cos(randomAngle * Mathf.Deg2Rad);
+
+        FireBullet(rx, ry, bulletOrb);
+    }
+
+    void AngleBullets()
+    {
+        float rx = Mathf.Sin(spreadAngleLeft * Mathf.Deg2Rad);
+        float ry = Mathf.Cos(spreadAngleLeft * Mathf.Deg2Rad);
+
+        FireBullet(rx, ry, bulletBasic);
+
+        rx = Mathf.Sin(spreadAngleRight * Mathf.Deg2Rad);
+        ry = Mathf.Cos(spreadAngleRight * Mathf.Deg2Rad);
+
+        FireBullet(rx, ry, bulletBasic);
+    }
+
+    void FocusingBullets()
+    {
+
+        AngleBullets();
+        spreadAngleLeft += 10;
+        spreadAngleRight -= 10;
+
+        RandomBullet();
+        RandomBullet();
+    }
+
+    void LingeringBullets()
+    {
+        bulletSpeed *= bulletAcceleration;
+        RandomOrb();
+    }
+
+    void TargetedBullet()
+    {
+        if (player != null)
+        {
+            Vector3 dirToPlayer = player.transform.position - transform.position;
+            FireBullet(dirToPlayer.x, dirToPlayer.y, bulletBasic);
+        }
+    }
+
+    void TargetedOrb()
+    {
+        if (player != null)
+        {
+            Vector3 dirToPlayer = player.transform.position - transform.position;
+            FireBullet(dirToPlayer.x, dirToPlayer.y, bulletOrb);
+        }
+    }
+
+    void BulletRaySweep()
+    {
+
+        
+
+        spreadAngleLeft += 15;
+        spreadAngleRight += 15;
+        RandomBullet();
+        RandomBullet();
+        
+    }
+
+    void BulletAttack(float rateOfFire,float speed = defaultBulletSpeed, float angleLeft = defaultSpreadAngleLeft,float angleRight = defaultSpreadAngleRight,bool random = false)
+    {
+        spreadAngleLeft = angleLeft;
+        spreadAngleRight = angleRight;
+        bulletSpeed = speed;
+
+        if (random)
+        {
+            InvokeRepeating(nameof(RandomBullet), 0f, rateOfFire);
+        }
+        else
+        {
+            InvokeRepeating(nameof(TargetedBullet), 0f, rateOfFire);
+        }
+        
+    }
+
+    void OrbAttack(float rateOfFire, float speed = defaultBulletSpeed, float angleLeft = defaultSpreadAngleLeft, float angleRight = defaultSpreadAngleRight, bool random = false)
+    {
+        spreadAngleLeft = angleLeft;
+        spreadAngleRight = angleRight;
+        bulletSpeed = speed;
+
+        if (random)
+        {
+            InvokeRepeating(nameof(RandomOrb), 0f, rateOfFire);
+        }
+        else
+        {
+            InvokeRepeating(nameof(TargetedOrb), 0f, rateOfFire);
+        }
     }
 
     /// <summary>
@@ -69,39 +175,44 @@ public class BossController : MonoBehaviour
         //Print the time of when the function is first called.
         Debug.Log("Started AttackCoroutine at timestamp : " + Time.time);
         //attacking = true;
-        
-        switch (Random.Range(1, 6))
+        int attackSelect = Random.Range(1, 9);
+        switch (attackSelect)
         {
             case 1:
-                Debug.Log("Balas Random");
-                InvokeRepeating(nameof(RandomBullet), 0f, rateOfFire);
+                Debug.Log("Balas al jugador");
+                BulletAttack( rateOfFire, random: true);
+                
                 break;
             case 2:
                 Debug.Log("balas random rapido izquierda");
-                spreadAngleLeft = defaultSpreadAngleLeft + 10;
-                spreadAngleRight = defaultSpreadAngleRight - 90;
-                bulletSpeed = defaultBulletSpeed * 2f;
-                InvokeRepeating(nameof(RandomBullet), 0f, rateOfFire*0.5f);
+                BulletAttack(rateOfFire*0.5f,angleLeft: defaultSpreadAngleLeft + 50,angleRight: defaultSpreadAngleRight - 90,speed: defaultBulletSpeed * 2f, random: true);
                 break;
             case 3:
                 Debug.Log("balas random rapido en el centro");
-                spreadAngleLeft = defaultSpreadAngleLeft + 50;
-                spreadAngleRight = defaultSpreadAngleRight - 10;
-                bulletSpeed = defaultBulletSpeed * 2f;
-                InvokeRepeating(nameof(RandomBullet), 0f, rateOfFire * 0.5f);
+                BulletAttack(rateOfFire * 0.5f, angleLeft: defaultSpreadAngleLeft + 55, angleRight: defaultSpreadAngleRight - 55, speed: defaultBulletSpeed * 2f, random: true);
                 break;
             case 4:
                 Debug.Log("balas random rapido derecha");
-                spreadAngleLeft = defaultSpreadAngleLeft + 90;
-                spreadAngleRight = defaultSpreadAngleRight - 50;
-                bulletSpeed = defaultBulletSpeed * 2f;
-                InvokeRepeating(nameof(RandomBullet), 0f, rateOfFire * 0.5f);
+                BulletAttack(rateOfFire * 0.5f, angleLeft: defaultSpreadAngleLeft + 90, angleRight: defaultSpreadAngleRight - 50, speed: defaultBulletSpeed * 2f, random: true);
                 break;
             case 5:
-                Debug.Log("muchas balas lentas");
-                bulletSpeed = defaultBulletSpeed * 0.6f;
-                InvokeRepeating(nameof(RandomBullet), 0f, rateOfFire * 0.2f);
+                Debug.Log("orbes random");
+                OrbAttack(rateOfFire * 3f, speed: defaultBulletSpeed * 0.6f,random: true);
                 break;
+            case 6:
+                Debug.Log("balas convergentes");
+                InvokeRepeating(nameof(FocusingBullets), 0f, rateOfFire*1.2f);
+                break;
+            case 7:
+                Debug.Log("Orbes que atacan");
+                OrbAttack(rateOfFire*2, speed: defaultBulletSpeed * 1.2f);
+                break;
+            case 8:
+                Debug.Log("Barrido");
+                spreadAngleRight = defaultSpreadAngleLeft + 5;
+                InvokeRepeating(nameof(BulletRaySweep), 0f, rateOfFire*0.3f);
+                break;
+
         }
 
         
@@ -111,7 +222,6 @@ public class BossController : MonoBehaviour
         //After we have waited n seconds print the time again.
         Debug.Log("Finished AttackCoroutine at timestamp : " + Time.time);
         CancelInvoke();
-        bulletRay.SetActive(false);
         StartCoroutine(RestingCoroutine());
     }
     /// <summary>
@@ -125,7 +235,7 @@ public class BossController : MonoBehaviour
         spreadAngleLeft = defaultSpreadAngleLeft;
         spreadAngleRight = defaultSpreadAngleRight;
         bulletSpeed = defaultBulletSpeed;
-
+        bulletAcceleration = defaultBulletAcceleration;
         //yield on a new YieldInstruction that waits for n seconds.
         yield return new WaitForSeconds(restingTime);
 
@@ -139,9 +249,9 @@ public class BossController : MonoBehaviour
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
-    void FireBullet(float x, float y)
+    void FireBullet(float x, float y,GameObject bulletPrefab)
     {
-        GameObject bullet = Instantiate(bulletBasic);
+        GameObject bullet = Instantiate(bulletPrefab);
         bullet.transform.position = transform.position;
         bullet.GetComponent<BulletController>().speed = bulletSpeed;
         bullet.GetComponent<BulletController>().direction = new Vector3(x, y, 0).normalized;

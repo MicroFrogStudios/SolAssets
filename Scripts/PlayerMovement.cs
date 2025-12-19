@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -23,7 +24,8 @@ public class PlayerMovement : MonoBehaviour
     public int liveMax = 3;
     private int lives;
 
-
+    
+    public event Action LostLife;
 
     void Start()
     {
@@ -78,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("bullet"))
         {
             Debug.Log("life lost");
+            LostLife?.Invoke();
             lives--;
             Destroy(collision.gameObject);
 

@@ -16,7 +16,10 @@ public class ShootOnClick : MonoBehaviour
 
     private void Start()
     {
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
 
+        }
 
         if (shieldObject != null)
         {
