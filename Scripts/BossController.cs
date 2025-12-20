@@ -176,42 +176,42 @@ public class BossController : MonoBehaviour
     IEnumerator AttackCoroutine()
     {
         //Print the time of when the function is first called.
-        Debug.Log("Started AttackCoroutine at timestamp : " + Time.time);
+        //Debug.Log("Started AttackCoroutine at timestamp : " + Time.time);
         //attacking = true;
         int attackSelect = Random.Range(1, 9);
         switch (attackSelect)
         {
             case 1:
-                Debug.Log("Balas al jugador");
+                //Debug.Log("Balas al jugador");
                 BulletAttack( rateOfFire, random: true);
                 
                 break;
             case 2:
-                Debug.Log("balas random rapido izquierda");
+                //Debug.Log("balas random rapido izquierda");
                 BulletAttack(rateOfFire*0.5f,angleLeft: defaultSpreadAngleLeft + 50,angleRight: defaultSpreadAngleRight - 90,speed: defaultBulletSpeed * 2f, random: true);
                 break;
             case 3:
-                Debug.Log("balas random rapido en el centro");
+                //Debug.Log("balas random rapido en el centro");
                 BulletAttack(rateOfFire * 0.5f, angleLeft: defaultSpreadAngleLeft + 55, angleRight: defaultSpreadAngleRight - 55, speed: defaultBulletSpeed * 2f, random: true);
                 break;
             case 4:
-                Debug.Log("balas random rapido derecha");
+                //Debug.Log("balas random rapido derecha");
                 BulletAttack(rateOfFire * 0.5f, angleLeft: defaultSpreadAngleLeft + 90, angleRight: defaultSpreadAngleRight - 50, speed: defaultBulletSpeed * 2f, random: true);
                 break;
             case 5:
-                Debug.Log("orbes random");
+                //Debug.Log("orbes random");
                 OrbAttack(rateOfFire * 3f, speed: defaultBulletSpeed * 0.6f,random: true);
                 break;
             case 6:
-                Debug.Log("balas convergentes");
+                //Debug.Log("balas convergentes");
                 InvokeRepeating(nameof(FocusingBullets), 0f, rateOfFire*1.2f);
                 break;
             case 7:
-                Debug.Log("Orbes que atacan");
+                //Debug.Log("Orbes que atacan");
                 OrbAttack(rateOfFire*2, speed: defaultBulletSpeed * 1.2f);
                 break;
             case 8:
-                Debug.Log("Barrido");
+                //Debug.Log("Barrido");
                 spreadAngleRight = defaultSpreadAngleLeft + 5;
                 InvokeRepeating(nameof(BulletRaySweep), 0f, rateOfFire*0.3f);
                 break;
@@ -223,7 +223,7 @@ public class BossController : MonoBehaviour
         //yield return new WaitUntil(() => finishedAttack == true);
         finishedAttack = false;
         //After we have waited n seconds print the time again.
-        Debug.Log("Finished AttackCoroutine at timestamp : " + Time.time);
+        //Debug.Log("Finished AttackCoroutine at timestamp : " + Time.time);
         CancelInvoke();
         StartCoroutine(RestingCoroutine());
     }
@@ -234,7 +234,7 @@ public class BossController : MonoBehaviour
     IEnumerator RestingCoroutine()
     {
         //Print the time of when the function is first called.
-        Debug.Log("Started RestingCoroutine at timestamp : " + Time.time);
+        //Debug.Log("Started RestingCoroutine at timestamp : " + Time.time);
         spreadAngleLeft = defaultSpreadAngleLeft;
         spreadAngleRight = defaultSpreadAngleRight;
         bulletSpeed = defaultBulletSpeed;
@@ -243,7 +243,7 @@ public class BossController : MonoBehaviour
         yield return new WaitForSeconds(restingTime);
 
         //After we have waited n seconds print the time again.
-        Debug.Log("Finished RestingCoroutine at timestamp : " + Time.time);
+        //Debug.Log("Finished RestingCoroutine at timestamp : " + Time.time);
         StartCoroutine(AttackCoroutine());
     }
 
@@ -266,7 +266,7 @@ public class BossController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("PlayerBullet"))
         {
-            Debug.Log("BossLive -1");
+            //Debug.Log("BossLive -1");
             BossLive--;
             Destroy(collision.gameObject);
 
