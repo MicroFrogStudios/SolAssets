@@ -4,7 +4,7 @@ using UnityEngine;
 public class OrbBulletController : BulletController
 {
 
-
+    public int lives = 3;
     public float freq = 1, amp = 1;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -18,6 +18,27 @@ public class OrbBulletController : BulletController
         fireShader.SetFloat("_noiseVariation", fireShader.GetFloat("_noiseVariation") + Time.deltaTime );
 
         transform.localScale = Vector3.one* (amp*Mathf.Sin(Time.time* freq) + 1.2f);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("PlayerBullet"))
+        {
+
+            Destroy(collision.gameObject);
+            if (lives > 1)
+            {
+                lives--;
+
+            }
+            else
+            {
+                //GetComponent<Collider>().enabled = false;
+                Destroy(gameObject);
+            }
+
+
+        }
     }
 
 }
