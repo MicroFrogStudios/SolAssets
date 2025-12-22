@@ -42,7 +42,7 @@ public class ShootOnClick : MonoBehaviour
             nextFireTime = Time.time + shootCooldown;
         }
 
-        ActivateShield();
+        //ActivateShield();
     }
 
     private void ActivateShield()

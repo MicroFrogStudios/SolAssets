@@ -1,14 +1,15 @@
-using JetBrains.Annotations;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class BossController : MonoBehaviour
 {
+
+    public event System.Action deathTrigger;
+
     [Header("prefabs")]
     public GameObject bulletBasic;
     public GameObject bulletOrb;
+    public GameObject dyingPrefab;
 
     [Header("sun parameters")]
     public float restingTime = 0.5f;
@@ -28,13 +29,14 @@ public class BossController : MonoBehaviour
     private float bulletAcceleration = 1.2f;
 
     public bool finishedAttack = false;
-
     private GameObject player;
     private AudioSource fireSound;
     private void Start()
     {
 
         fireSound = GetComponent<AudioSource>();
+        
+
 
         BossLive = BossLiveMax;
         spreadAngleLeft = defaultSpreadAngleLeft;
@@ -42,6 +44,7 @@ public class BossController : MonoBehaviour
         bulletSpeed = defaultBulletSpeed;
         player = GameObject.FindGameObjectWithTag("Player");
         StartCoroutine(RestingCoroutine());
+        
 
     }
 
@@ -272,7 +275,9 @@ public class BossController : MonoBehaviour
 
             if (BossLive <= 0)
             {
-
+                deathTrigger?.Invoke();
+                GameObject dyingSun = Instantiate(dyingPrefab);
+                dyingSun.transform.position = transform.position;
                 Destroy(gameObject);
             }
         }
